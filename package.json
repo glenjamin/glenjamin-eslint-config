@@ -1,10 +1,10 @@
 {
-  "name": "@glenjamin/eslint-config",
+  "name": "glenjamin-eslint-config",
   "version": "1.0.0",
-  "description": "Shared eslint configs based on my preferences",
-  "main": "index.js",
+  "description": "Glenjamin's eslint config",
+  "prrivate": true,
   "scripts": {
-    "test": "eslint ."
+    "test": "node ./test.js"
   },
   "repository": {
     "type": "git",
