@@ -2,6 +2,8 @@
 
 This is for me, feel free to use it if you want.
 
+[![Build Status](https://travis-ci.org/glenjamin/glenjamin-eslint-config.svg?branch=master)](https://travis-ci.org/glenjamin/glenjamin-eslint-config)
+
 ## Install
 
 ### ES5

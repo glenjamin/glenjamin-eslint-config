@@ -114,7 +114,9 @@ function loadTests(ruleset, type, callback) {
   var dir = path.join(__dirname, ruleset, type);
   fs.readdir(dir, function(err, files) {
     if (err) return callback(err);
-    files = files.map(x => path.join(type, x));
-    return callback(null, files);
+    return callback(null,
+      files
+        .filter(x => /\.js$/.test(x))
+        .map(x => path.join(type, x)));
   });
 }
