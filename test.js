@@ -2,7 +2,11 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 
-var rulesets = ['default', 'es6', 'react'];
+var rulesets = [
+  'default',
+  // 'es6',
+  // 'react'
+];
 var results = {};
 
 rulesets.forEach(function(ruleset) {
