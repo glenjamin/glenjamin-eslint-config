@@ -1,5 +1,8 @@
 module.exports = {
     "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 5
+    },
     "rules": {
         "camelcase": 0,
         "comma-dangle": 0,

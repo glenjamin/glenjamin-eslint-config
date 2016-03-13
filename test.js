@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
@@ -102,7 +104,7 @@ function formatResult(result) {
     return 'Linting passed';
   }
   return result.messages
-    .map(m => `${m.ruleId}: ${m.message} (line ${m.line})`)
+    .map(m => `${m.message} (line ${m.line})`)
     .join(', ');
 }
 
