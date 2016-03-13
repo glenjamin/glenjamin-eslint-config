@@ -1,6 +1,7 @@
 language: node_js
+sudo: false
 node_js:
-  - "5"
+  - "node"
 before_script: >
   rulesets=(default es6 react)
   for ruleset in rulesets; do
