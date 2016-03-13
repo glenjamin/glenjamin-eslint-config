@@ -1,3 +1,10 @@
 language: node_js
 node_js:
   - "5"
+before_script: >
+  rulesets=(default es6 react)
+  for ruleset in rulesets; do
+    cd $ruleset
+    npm install
+    cd -
+  done
