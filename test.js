@@ -18,19 +18,20 @@ rulesets.forEach(function(ruleset) {
   };
   loadTests(ruleset, 'good', function(err, tests) {
     if (err) throw err;
-    runTests(ruleset, tests, 'good');
+    runTests(ruleset, tests, 'good', checkGood);
   });
   loadTests(ruleset, 'bad', function(err, tests) {
     if (err) throw err;
-    runTests(ruleset, tests, 'bad');
+    runTests(ruleset, tests, 'bad', checkBad);
   });
 });
 
-function runTests(ruleset, tests, type) {
+function runTests(ruleset, tests, type, check) {
   execTests(ruleset, tests, function(err, testResults) {
     if (err) throw err;
-    results[ruleset][type].tests = testResults;
-    results[ruleset][type].done = true;
+    var section = results[ruleset][type];
+    section.tests = testResults.map(t => check(ruleset, t));
+    section.done = true;
     checkDone();
   });
 }
@@ -67,45 +68,111 @@ function execTest(ruleset, name, callback) {
   });
 }
 
+function checkGood(ruleset, test) {
+  var result = test.result;
+  if (result instanceof Error) {
+    return errored(test);
+  }
+  var passed = (result.errorCount == 0 && result.warningCount == 0);
+  return {
+    passed,
+    title: test.name,
+    summary: passed ? 'Lint passed' : 'Lint failed',
+    detail: passed ? [] : result.messages.map(m => ({
+      passed: false,
+      info: `${m.message} (line ${m.line})`
+    }))
+  };
+}
+
+function checkBad(ruleset, test) {
+  var result = test.result;
+  if (result instanceof Error) {
+    return errored(test);
+  }
+  var expectations = loadExpectations(ruleset, test.name);
+  if (expectations) {
+    // return checkBadWithExpectations(test, expectations);
+  }
+  var passed = (result.errorCount > 0 || result.warningCount > 0);
+  return {
+    passed,
+    title: test.name,
+    summary: passed ? 'Lint failed' : 'Lint passed',
+    detail: passed ? result.messages.map(m => ({
+      passed: null,
+      info: `${m.message} (line ${m.line})`
+    })) : []
+  };
+}
+
+function checkBadWithExpectations(test, expectations) {
+  return {
+    passed: false,
+    title: test.name,
+    summary: 'TODO',
+    detail: expectations.map(x => ({
+      passed: false,
+      info: x
+    }))
+  };
+}
+
+function errored(test) {
+  return {
+    passed: false,
+    title: test.name,
+    summary: String(test.result).trim()
+  };
+}
+
 function checkDone() {
   if (rulesets.some(rulesetIncomplete)) return;
+  reportSummary();
+}
+
+/* eslint-disable no-console */
+function reportSummary() {
   var code = 0;
-  /* eslint-disable no-console */
   rulesets.forEach(ruleset => {
     console.log(`**** ${ruleset} ****`);
     console.log(`---- good ----`);
-    results[ruleset].good.tests.forEach(function(test) {
-      var r = test.result;
-      var pass = (r.errorCount == 0 && r.warningCount == 0);
-      if (!pass) code = 1;
-      console.log(`${icon(pass)}\t${test.name} - ${formatResult(r)}`);
-    });
+    reportTests(results[ruleset].good.tests);
     console.log(`---- bad ----`);
-    results[ruleset].bad.tests.forEach(function(test) {
-      var r = test.result;
-      var pass = (r.errorCount > 0 || r.warningCount > 0);
-      if (!pass) code = 1;
-      console.log(`${icon(pass)}\t${test.name} - ${formatResult(r)}`);
-    });
+    reportTests(results[ruleset].bad.tests);
     console.log('');
   });
-  /* eslint-enable no-console */
+  function reportTests(tests) {
+    tests.forEach(function(test) {
+      if (!test.passed) code = 1;
+      reportTest(test);
+    });
+  }
   // eslint-disable-next-line no-process-exit
   process.exit(code);
 }
 
+function reportTest(test) {
+  var headline = `${icon(test.passed)}\t${test.title}`;
+  if (test.summary) headline += ` - ${test.summary}`;
+  console.log(headline);
+  (test.detail || []).forEach(detail => {
+    console.log(`\t${icon(detail.passed)}\t${detail.info}`);
+  });
+}
+/* eslint-enable no-console */
+
 function icon(pass) {
+  if (pass === null) return '';
   return pass ? '✅' : '❌';
 }
 
-function formatResult(result) {
-  if (result instanceof Error) return String(result);
-  if (result.errorCount == 0 && result.warningCount == 0) {
-    return 'Linting passed';
+function loadExpectations(ruleset, name) {
+  try {
+    return require(path.join(__dirname, ruleset, name + 'on'));
+  } catch (ex) {
+    return null;
   }
-  return result.messages
-    .map(m => `${m.message} (line ${m.line})`)
-    .join(', ');
 }
 
 function rulesetIncomplete(ruleset) {
