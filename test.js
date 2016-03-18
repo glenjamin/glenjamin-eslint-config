@@ -92,7 +92,7 @@ function checkBad(ruleset, test) {
   }
   var expectations = loadExpectations(ruleset, test.name);
   if (expectations) {
-    // return checkBadWithExpectations(test, expectations);
+    return checkBadWithExpectations(test, expectations);
   }
   var passed = (result.errorCount > 0 || result.warningCount > 0);
   return {
@@ -107,14 +107,25 @@ function checkBad(ruleset, test) {
 }
 
 function checkBadWithExpectations(test, expectations) {
+  var messages = test.result.messages;
+  var detail = expectations.map(x => {
+    var info = find(messages, m => (
+      m.line == x[0] && contains(m.message, x[1]))
+    );
+    var passed = !!info;
+    if (passed) {
+      info = `${info.message} (line ${info.line})`;
+    } else {
+      info = `Expected '${x[1]}' (line ${x[0]})`;
+    }
+    return { passed, info };
+  });
+  var overallPassed = detail.every(d => d.passed);
   return {
-    passed: false,
+    passed: overallPassed,
     title: test.name,
-    summary: 'TODO',
-    detail: expectations.map(x => ({
-      passed: false,
-      info: x
-    }))
+    summary: overallPassed ? 'All checks matched' : 'Some checks failed',
+    detail
   };
 }
 
@@ -192,4 +203,11 @@ function loadTests(ruleset, type, callback) {
         .filter(x => /\.js$/.test(x))
         .map(x => path.join(type, x)));
   });
+}
+
+function find(arr, fn) {
+  return arr.filter(fn)[0];
+}
+function contains(str, x) {
+  return str.indexOf(x) !== -1;
 }
