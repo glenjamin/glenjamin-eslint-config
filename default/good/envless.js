@@ -1,11 +1,15 @@
-function stuff() {
-  return { a: 1 };
-}
+(function() {
+  var a;
 
-stuff();
+  function stuff() {
+    return { a: 1 };
+  }
 
-definedLater();
+  stuff();
 
-function definedLater() {
-  return 1 + 1;
-}
+  definedLater();
+
+  function definedLater() {
+    return a + a;
+  }
+})();

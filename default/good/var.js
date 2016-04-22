@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 // one-var is allowed, value optional
 var a = 1, b;
 

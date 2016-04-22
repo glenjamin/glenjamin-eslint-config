@@ -1,4 +1,5 @@
+/* eslint-env node */
 var a = 1;
 if (a == "a" || a == 'a') {
-  a *= 1;
+  a *= a;
 }

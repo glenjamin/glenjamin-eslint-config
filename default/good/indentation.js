@@ -1,6 +1,9 @@
 // I don't really care all that much
 // but figure i'd better pick something
 
+/* eslint-env node */
+/* eslint-disable no-magic-numbers */
+
 var x;
 
 function a(b) {
