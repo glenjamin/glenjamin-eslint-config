@@ -10,14 +10,6 @@ function a(b) {
   return b;
 }
 
-switch (a()) {
-  case 'x':
-    x *= 1;
-    break;
-  default:
-    x *= 2;
-}
-
 if (x > 7) {
   if (x == 2) {
     x -= 3;
