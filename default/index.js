@@ -1,5 +1,4 @@
 /* eslint-env node */
-/* eslint-disable no-magic-numbers */
 module.exports = {
   "extends": "eslint:recommended",
   "parserOptions": {
@@ -26,10 +25,16 @@ module.exports = {
     "key-spacing": "error",
     "keyword-spacing": "error",
     "max-depth": ["error", 4],
-    "max-len": ["error", 80, 4],
+    "max-len": ["error", {
+      "code": 80, "tabWidth": 4,
+      "ignoreUrls": true
+    }],
     "max-nested-callbacks": ["error", 3],
     "max-params": ["error", 5],
-    "max-statements": ["error", 20],
+    "max-statements": ["error",
+      { "max": 20 },
+      { "ignoreTopLevelFunctions": true }
+    ],
     "max-statements-per-line": ["error", { "max": 1 }],
     "new-parens": "error",
     "no-alert": "error",
@@ -49,7 +54,10 @@ module.exports = {
     "no-lone-blocks": "error",
     "no-lonely-if": "error",
     "no-loop-func": "error",
-    "no-magic-numbers": "error",
+    "no-magic-numbers": ["error", {
+      ignoreArrayIndexes: true,
+      ignore: [0, 1, 2, 3, 4, 5]
+    }],
     "no-mixed-requires": ["error", { "allowCall": true }],
     "no-multi-spaces": "error",
     "no-multi-str": "error",
