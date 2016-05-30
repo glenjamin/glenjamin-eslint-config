@@ -96,7 +96,7 @@ module.exports = {
     "no-useless-concat": "error",
     "no-useless-escape": "error",
     "no-whitespace-before-property": "error",
-    "object-curly-spacing": ["error", "always"],
+    "object-curly-spacing": ["off"],
     "semi": "error",
     "semi-spacing": ["error", { "before": false, "after": true }],
     "space-before-blocks": "error",
