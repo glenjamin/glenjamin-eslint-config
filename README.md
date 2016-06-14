@@ -9,7 +9,7 @@ This is for me, feel free to use it if you want.
 ### ES5
 
 ```sh
-npm install --save-dev '@glenjamin/eslint-config'
+npm install --save-dev --save-exact '@glenjamin/eslint-config' eslint@2.8.0
 ```
 
 ```json
