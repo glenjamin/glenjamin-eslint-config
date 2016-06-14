@@ -1,6 +1,6 @@
 {
   "name": "@glenjamin/eslint-config",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Shared eslint configs based on my preferences",
   "main": "index.js",
   "repository": {
